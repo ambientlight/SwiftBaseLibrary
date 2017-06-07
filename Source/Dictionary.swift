@@ -5,16 +5,19 @@
 //
 //
 
-#if COCOA
-__mapped public class Dictionary<Key: class, Value: class> /*: INSFastEnumeration<T>*/ => Foundation.NSMutableDictionary {
-#elseif JAVA
-__mapped public class Dictionary<Key,Value> => java.util.HashMap<Key,Value> {
-#elseif CLR
-__mapped public class Dictionary<Key,Value> => System.Collections.Generic.Dictionary<Key,Value> {
-#elseif ISLAND
-__mapped public class Dictionary<Key,Value> => RemObjects.Elements.System.Dictionary<Key,Value> {
-#endif
-
+__mapped public class Dictionary<Key, Value> /*: INSFastEnumeration<T>*/ => 
+  #if COCOA
+  Foundation.NSMutableDictionary 
+  #elseif JAVA
+  java.util.HashMap<Key,Value> 
+  #elseif CLR
+  System.Collections.Generic.Dictionary<Key,Value>
+  #elseif ISLAND
+  RemObjects.Elements.System.Dictionary<Key,Value>
+  #else
+  #error Unsupported platform
+  #endif
+{
 	public init() {
 		#if JAVA
 		return java.util.HashMap<Key,Value>()
@@ -80,18 +83,18 @@ __mapped public class Dictionary<Key,Value> => RemObjects.Elements.System.Dictio
 			#if JAVA
 			if let v = newValue {
 				__mapped[key] = v
-			} else { 
+			} else {
 					if __mapped.containsKey(key) {
 					__mapped.remove(key)
-				} 
+				}
 			}
 			#elseif CLR || ISLAND
 			if let v = newValue {
 				__mapped[key] = v
-			} else { 
+			} else {
 					if __mapped.ContainsKey(key) {
 					__mapped.Remove(key)
-				} 
+				}
 			}
 			#elseif COCOA
 			if let val = newValue {
@@ -171,7 +174,7 @@ __mapped public class Dictionary<Key,Value> => RemObjects.Elements.System.Dictio
 		#endif
 	}
 
-	public var isEmpty: Bool { 
+	public var isEmpty: Bool {
 		#if JAVA
 		return __mapped.isEmpty()
 		#elseif CLR
@@ -189,7 +192,7 @@ __mapped public class Dictionary<Key,Value> => RemObjects.Elements.System.Dictio
 		#elseif CLR || ISLAND
 		return __mapped.Keys
 		#elseif COCOA
-		return __mapped.allKeys as! ISequence<Key> 
+		return __mapped.allKeys as! ISequence<Key>
 		#endif
 	}
 
@@ -207,28 +210,28 @@ __mapped public class Dictionary<Key,Value> => RemObjects.Elements.System.Dictio
 public static class DictionaryHelper {
 	#if JAVA
 	public static func Enumerate<Key, Value>(_ val: java.util.HashMap<Key,Value>) -> ISequence<(Key, Value)> {
-		for entry in val.entrySet() { 
+		for entry in val.entrySet() {
 			var item: (Key, Value) =  (entry.Key, entry.Value)
 		  __yield item
 		}
 	}
 	#elseif CLR
 	public static func Enumerate<Key, Value>(_ val: System.Collections.Generic.Dictionary<Key,Value>) -> ISequence<(Key, Value)> {
-		for entry in val { 
+		for entry in val {
 			var item: (Key, Value) =  (entry.Key, entry.Value)
 		  __yield item
 		}
 	}
 	#elseif ISLAND
 	public static func Enumerate<Key, Value>(_ val: RemObjects.Elements.System.Dictionary<Key,Value>) -> ISequence<(Key, Value)> {
-		for entry in val { 
+		for entry in val {
 			var item: (Key, Value) =  (entry.Key, entry.Value)
 		  __yield item
 		}
 	}
 	#elseif COCOA
 	public static func Enumerate<Key, Value>(_ val: NSMutableDictionary) -> ISequence<(Key, Value)> {
-		for entry in val { 
+		for entry in val {
 			var item: (Key, Value) =  (entry, val[entry]?)
 		  __yield item
 		}
